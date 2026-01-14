@@ -8,27 +8,9 @@ LilWill::LilWill()
     retract(); // Start retracted
 }
 
-void LilWill::extend() {
-    lilWillPneumatic.set_value(true);
-    isExtended = true;
-}
-
-void LilWill::retract() {
-    lilWillPneumatic.set_value(false);
-    isExtended = false;
-}
-
-void LilWill::toggle() {
-    if (isExtended) {
-        retract();
-    } else {
-        extend();
-    }
-}
-
 void LilWill::control(pros::Controller& master) {
     static bool lastButtonState = false;
-    bool currentButtonState = master.get_digital(CONTROLLER_BUTTONS::LIL_WILL::TOGGLE);
+    bool currentButtonState = master.get_digital_new_press(CONTROLLER_BUTTONS::LIL_WILL::TOGGLE);
     
     // Toggle on button press (rising edge detection)
     if (currentButtonState && !lastButtonState) {
