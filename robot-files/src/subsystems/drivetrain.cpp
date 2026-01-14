@@ -2,17 +2,29 @@
 
 // Constructor: configure motors, sensors, controller settings, and lemlib chassis
 Drivetrain::Drivetrain()
-    : leftMotorGroup({PORT_VALUES::LEFT_1, PORT_VALUES::LEFT_2, PORT_VALUES::LEFT_3},
-                     pros::MotorGears::blue),
-      rightMotorGroup({PORT_VALUES::RIGHT_1, PORT_VALUES::RIGHT_2, PORT_VALUES::RIGHT_3},
-                      pros::MotorGears::blue),
+    : leftMotorGroup({
+                    PORT_VALUES::LEFT_1,
+                    PORT_VALUES::LEFT_2,
+                    PORT_VALUES::LEFT_3},
+                    pros::MotorGears::blue
+                ),
+      rightMotorGroup({
+                    PORT_VALUES::RIGHT_1, 
+                    PORT_VALUES::RIGHT_2, 
+                    PORT_VALUES::RIGHT_3},
+                    pros::MotorGears::blue
+                ),
       imu1(PORT_VALUES::IMU_1),
-      throttleCurve(OPERATOR_CONSTANTS::THROTTLE::DEADBAND,
+
+      throttleCurve(
+                    OPERATOR_CONSTANTS::THROTTLE::DEADBAND,
                     OPERATOR_CONSTANTS::THROTTLE::MIN,
-                    OPERATOR_CONSTANTS::THROTTLE::CURVE),
+                    OPERATOR_CONSTANTS::THROTTLE::CURVE
+                    ),
       steerCurve(OPERATOR_CONSTANTS::STEER::DEADBAND,
                  OPERATOR_CONSTANTS::STEER::MIN,
-                 OPERATOR_CONSTANTS::STEER::CURVE),
+                 OPERATOR_CONSTANTS::STEER::CURVE
+                ),
       lateralController(DRIVETRAIN_CONSTANTS::LATERAL::KP,
                         DRIVETRAIN_CONSTANTS::LATERAL::KI,
                         DRIVETRAIN_CONSTANTS::LATERAL::KD,
@@ -21,7 +33,8 @@ Drivetrain::Drivetrain()
                         DRIVETRAIN_CONSTANTS::LATERAL::SMALL_TIMEOUT,
                         DRIVETRAIN_CONSTANTS::LATERAL::LARGE_ERROR,
                         DRIVETRAIN_CONSTANTS::LATERAL::LARGE_TIMEOUT,
-                        DRIVETRAIN_CONSTANTS::LATERAL::SLEW),
+                        DRIVETRAIN_CONSTANTS::LATERAL::SLEW
+                    ),
       angularController(DRIVETRAIN_CONSTANTS::ANGULAR::KP,
                         DRIVETRAIN_CONSTANTS::ANGULAR::KI,
                         DRIVETRAIN_CONSTANTS::ANGULAR::KD,
@@ -30,22 +43,26 @@ Drivetrain::Drivetrain()
                         DRIVETRAIN_CONSTANTS::ANGULAR::SMALL_TIMEOUT,
                         DRIVETRAIN_CONSTANTS::ANGULAR::LARGE_ERROR,
                         DRIVETRAIN_CONSTANTS::ANGULAR::LARGE_TIMEOUT,
-                        DRIVETRAIN_CONSTANTS::ANGULAR::SLEW),
+                        DRIVETRAIN_CONSTANTS::ANGULAR::SLEW
+                    ),
       verticalRotationSensor(PORT_VALUES::VERTICAL_ROTATION_SENSOR),
       horizontalRotationSensor(PORT_VALUES::HORIZONTAL_ROTATION_SENSOR),
       verticalTrackingWheel(&verticalRotationSensor,
                             lemlib::Omniwheel::NEW_275,
-                            CHASIS_VALUES::LATERALTRACKING_WHEEL_OFFSET),
+                            CHASIS_VALUES::LATERALTRACKING_WHEEL_OFFSET
+                        ),
       horizontalTrackingWheel(&horizontalRotationSensor,
                               lemlib::Omniwheel::NEW_275,
-                              CHASIS_VALUES::HORIZONTALTRACKING_WHEEL_OFFSET),
+                              CHASIS_VALUES::HORIZONTALTRACKING_WHEEL_OFFSET
+                            ),
       sensors(&verticalTrackingWheel, nullptr, &horizontalTrackingWheel, nullptr, &imu1),
       drivetrain(&leftMotorGroup,
                  &rightMotorGroup,
                  CHASIS_VALUES::TRACKWIDTH,
                  lemlib::Omniwheel::NEW_4,
                  CHASIS_VALUES::RPM,
-                 CHASIS_VALUES::HORIZONTAL_DRIFT),
+                 CHASIS_VALUES::HORIZONTAL_DRIFT
+                ),
       chassis(drivetrain, lateralController, angularController, sensors) {}
 
 void Drivetrain::init() {
