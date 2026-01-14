@@ -53,6 +53,14 @@ public:
   void drive();
 
   /**
+   * @brief Main run method - call this in the robot loop
+   *
+   * This method handles all drivetrain operations during teleoperated mode.
+   * It calls drive() and can be extended to include additional functionality.
+   */
+  void run();
+
+  /**
    * @brief Initialize drivetrain - calibrates sensors and starts telemetry
    *
    * Performs:
