@@ -1,8 +1,9 @@
 #include "subsystems/drivetrain.hpp"
 
 // Constructor: configure motors, sensors, controller settings, and lemlib chassis
-Drivetrain::Drivetrain()
-    : leftMotorGroup({
+Drivetrain::Drivetrain(): 
+
+    leftMotorGroup({
                     PORT_VALUES::LEFT_1,
                     PORT_VALUES::LEFT_2,
                     PORT_VALUES::LEFT_3},
@@ -25,6 +26,7 @@ Drivetrain::Drivetrain()
                  OPERATOR_CONSTANTS::STEER::MIN,
                  OPERATOR_CONSTANTS::STEER::CURVE
                 ),
+
       lateralController(DRIVETRAIN_CONSTANTS::LATERAL::KP,
                         DRIVETRAIN_CONSTANTS::LATERAL::KI,
                         DRIVETRAIN_CONSTANTS::LATERAL::KD,
