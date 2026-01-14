@@ -9,15 +9,13 @@ LilWill::LilWill()
 }
 
 void LilWill::control(pros::Controller& master) {
-    static bool lastButtonState = false;
+
     bool currentButtonState = master.get_digital_new_press(CONTROLLER_BUTTONS::LIL_WILL::TOGGLE);
     
     // Toggle on button press (rising edge detection)
-    if (currentButtonState && !lastButtonState) {
+    if (currentButtonState) {
         toggle();
     }
-    
-    lastButtonState = currentButtonState;
 }
 
 void LilWill::run() {
