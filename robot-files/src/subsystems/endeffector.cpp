@@ -1,5 +1,6 @@
 #include "subsystems/endeffector.hpp"
 #include "constants.hpp"
+#include "globals.hpp"
 #include "pros/misc.hpp"
 
 EndEffector::EndEffector()
@@ -42,4 +43,9 @@ void EndEffector::control(pros::Controller& master) {
     if (isScoring && endEffectorMotor.get_actual_velocity() < 5) {
         stop();
     }
+}
+
+void EndEffector::run() {
+    // Use the shared global controller for operator control
+    control(globals::controller);
 }

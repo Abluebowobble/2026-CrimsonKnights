@@ -1,5 +1,6 @@
 #include "subsystems/intake.hpp"
 #include "constants.hpp"
+#include "globals.hpp"
 #include "pros/misc.hpp"
 
 Intake::Intake()
@@ -23,4 +24,9 @@ void Intake::control(pros::Controller& master) {
     } else {
         stop();
     }
+}
+
+void Intake::run() {
+    // Use the shared global controller for operator control
+    control(globals::controller);
 }

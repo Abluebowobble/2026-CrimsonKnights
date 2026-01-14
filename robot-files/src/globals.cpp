@@ -14,13 +14,6 @@
  */
 
 #include "globals.hpp"
-#include "constants.hpp"
-#include "pros/abstract_motor.hpp"
-#include "pros/adi.hpp"
-#include "pros/misc.hpp"
-#include "pros/motors.hpp"
-#include "pros/optical.hpp"
-#include "pros/vision.h"
 
 namespace globals {
 

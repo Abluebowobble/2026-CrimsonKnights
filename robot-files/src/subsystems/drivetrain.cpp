@@ -1,56 +1,79 @@
 #include "subsystems/drivetrain.hpp"
-#include "pros/misc.hpp"
-#include "pros/screen.hpp"
 
-// Constructor
+// Constructor: configure motors, sensors, controller settings, and lemlib chassis
 Drivetrain::Drivetrain()
-    : leftMotorGroup({20, 19, -18}, pros::MotorGears::blue),
-      rightMotorGroup({-12, -13, 14}, pros::MotorGears::blue),
-      imu1(10),
-      throttleCurve(3, 10, 1.019),
-      steerCurve(3, 10, 1.019),
-      lateralController(10, 0, 3, 3, 1, 100, 3, 500, 20),
-      angularController(2, 0, 10, 3, 1, 100, 3, 500, 0),
-      verticalRotationSensor(11),
-      horizontalRotationSensor(20),
-      verticalTrackingWheel(&verticalRotationSensor, lemlib::Omniwheel::NEW_275, -2.5),
-      horizontalTrackingWheel(&horizontalRotationSensor, lemlib::Omniwheel::NEW_275, -5.75),
+    : leftMotorGroup({PORT_VALUES::LEFT_1, PORT_VALUES::LEFT_2, PORT_VALUES::LEFT_3},
+                     pros::MotorGears::blue),
+      rightMotorGroup({PORT_VALUES::RIGHT_1, PORT_VALUES::RIGHT_2, PORT_VALUES::RIGHT_3},
+                      pros::MotorGears::blue),
+      imu1(PORT_VALUES::IMU_1),
+      throttleCurve(OPERATOR_CONSTANTS::THROTTLE::DEADBAND,
+                    OPERATOR_CONSTANTS::THROTTLE::MIN,
+                    OPERATOR_CONSTANTS::THROTTLE::CURVE),
+      steerCurve(OPERATOR_CONSTANTS::STEER::DEADBAND,
+                 OPERATOR_CONSTANTS::STEER::MIN,
+                 OPERATOR_CONSTANTS::STEER::CURVE),
+      lateralController(DRIVETRAIN_CONSTANTS::LATERAL::KP,
+                        DRIVETRAIN_CONSTANTS::LATERAL::KI,
+                        DRIVETRAIN_CONSTANTS::LATERAL::KD,
+                        DRIVETRAIN_CONSTANTS::LATERAL::ANTI_WINDUP_RANGE,
+                        DRIVETRAIN_CONSTANTS::LATERAL::SMALL_ERROR,
+                        DRIVETRAIN_CONSTANTS::LATERAL::SMALL_TIMEOUT,
+                        DRIVETRAIN_CONSTANTS::LATERAL::LARGE_ERROR,
+                        DRIVETRAIN_CONSTANTS::LATERAL::LARGE_TIMEOUT,
+                        DRIVETRAIN_CONSTANTS::LATERAL::SLEW),
+      angularController(DRIVETRAIN_CONSTANTS::ANGULAR::KP,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::KI,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::KD,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::ANTI_WINDUP_RANGE,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::SMALL_ERROR,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::SMALL_TIMEOUT,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::LARGE_ERROR,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::LARGE_TIMEOUT,
+                        DRIVETRAIN_CONSTANTS::ANGULAR::SLEW),
+      verticalRotationSensor(PORT_VALUES::VERTICAL_ROTATION_SENSOR),
+      horizontalRotationSensor(PORT_VALUES::HORIZONTAL_ROTATION_SENSOR),
+      verticalTrackingWheel(&verticalRotationSensor,
+                            lemlib::Omniwheel::NEW_275,
+                            CHASIS_VALUES::LATERALTRACKING_WHEEL_OFFSET),
+      horizontalTrackingWheel(&horizontalRotationSensor,
+                              lemlib::Omniwheel::NEW_275,
+                              CHASIS_VALUES::HORIZONTALTRACKING_WHEEL_OFFSET),
       sensors(&verticalTrackingWheel, nullptr, &horizontalTrackingWheel, nullptr, &imu1),
-      drivetrain(&leftMotorGroup, &rightMotorGroup, 10, lemlib::Omniwheel::NEW_4, 360, 2),
+      drivetrain(&leftMotorGroup,
+                 &rightMotorGroup,
+                 CHASIS_VALUES::TRACKWIDTH,
+                 lemlib::Omniwheel::NEW_4,
+                 CHASIS_VALUES::RPM,
+                 CHASIS_VALUES::HORIZONTAL_DRIFT),
       chassis(drivetrain, lateralController, angularController, sensors) {}
 
 void Drivetrain::init() {
     // Set motor brake modes
     leftMotorGroup.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
     rightMotorGroup.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
-    
-    // Calibrate the chassis
+
+    // Calibrate the chassis (IMU and odometry)
     chassis.calibrate();
-    
-    // Start background task for position display
-    pros::Task screen_task([this]() {
-        while (true) {
-            pros::screen::print(pros::E_TEXT_MEDIUM, 0, "X: %.2f", chassis.getPose().x);
-            pros::screen::print(pros::E_TEXT_MEDIUM, 1, "Y: %.2f", chassis.getPose().y);
-            pros::screen::print(pros::E_TEXT_MEDIUM, 2, "Theta: %.2f", chassis.getPose().theta);
-            pros::delay(50);
-        }
-    });
 }
 
 void Drivetrain::drive() {
-    pros::Controller master(pros::E_CONTROLLER_MASTER);
-    
+    // Use the shared global controller for input
+    auto& master = globals::controller;
+
     // Get joystick values
-    int throttle = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int turn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-    
-    // Apply exponential curves
-    double curvedThrottle = throttleCurve.curve(throttle);
-    double curvedTurn = steerCurve.curve(turn);
-    
-    // Arcade drive
-    chassis.arcade(curvedThrottle, curvedTurn);
+    const int rawThrottle = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+    const int rawTurn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+    // Apply exponential drive curves
+    const float curvedThrottle = throttleCurve.curve(static_cast<float>(rawThrottle));
+    const float curvedTurn = steerCurve.curve(static_cast<float>(rawTurn));
+
+    // Arcade drive using lemlib, with desaturation bias from constants
+    chassis.arcade(static_cast<int>(curvedThrottle),
+                   static_cast<int>(curvedTurn),
+                   true, // disable built-in drive curve since we apply our own
+                   OPERATOR_CONSTANTS::DESATURATE_BIAS);
 }
 
 void Drivetrain::run() {
@@ -58,14 +81,8 @@ void Drivetrain::run() {
     drive();
 }
 
-lemlib::Chassis& Drivetrain::get_chassis() {
-    return chassis;
-}
+lemlib::Chassis& Drivetrain::get_chassis() { return chassis; }
 
-pros::MotorGroup& Drivetrain::get_left_motors() {
-    return leftMotorGroup;
-}
+pros::MotorGroup& Drivetrain::get_left_motors() { return leftMotorGroup; }
 
-pros::MotorGroup& Drivetrain::get_right_motors() {
-    return rightMotorGroup;
-}
+pros::MotorGroup& Drivetrain::get_right_motors() { return rightMotorGroup; }

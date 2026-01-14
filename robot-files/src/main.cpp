@@ -1,6 +1,4 @@
 #include "main.h"
-#include "globals.hpp"
-#include "pid.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "subsystems/drivetrain.hpp"
 
@@ -82,8 +80,6 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-  pros::Controller master(pros::E_CONTROLLER_MASTER);
-
   while (true) {
     // Run drivetrain subsystem
     drivetrain.run();

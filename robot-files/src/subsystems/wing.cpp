@@ -1,5 +1,6 @@
 #include "subsystems/wing.hpp"
 #include "constants.hpp"
+#include "globals.hpp"
 
 Wing::Wing()
     : wingPneumatic(PORT_VALUES::WING_PNEUMATIC),
@@ -35,4 +36,9 @@ void Wing::control(pros::Controller& master) {
     }
     
     lastButtonState = currentButtonState;
+}
+
+void Wing::run() {
+    // Use the shared global controller for operator control
+    control(globals::controller);
 }

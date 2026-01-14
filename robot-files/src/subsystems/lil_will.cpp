@@ -1,5 +1,6 @@
 #include "subsystems/lil_will.hpp"
 #include "constants.hpp"
+#include "globals.hpp"
 
 LilWill::LilWill()
     : lilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC),
@@ -35,4 +36,9 @@ void LilWill::control(pros::Controller& master) {
     }
     
     lastButtonState = currentButtonState;
+}
+
+void LilWill::run() {
+    // Use the shared global controller for operator control
+    control(globals::controller);
 }

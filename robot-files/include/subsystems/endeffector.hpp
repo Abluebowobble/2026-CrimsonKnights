@@ -43,6 +43,13 @@ public:
    */
   void control(pros::Controller& master);
 
+  /**
+   * @brief Run method to be called from the main robot loop.
+   *
+   * Internally uses the global controller and links buttons to actions.
+   */
+  void run();
+
 private:
   pros::Motor endEffectorMotor;
   bool isScoring;

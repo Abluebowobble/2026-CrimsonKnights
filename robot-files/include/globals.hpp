@@ -8,10 +8,7 @@
 
 #pragma once
 
-#include "api.h"
-#include "lemlib/api.hpp"
-#include "pros/optical.hpp"
-#include "pros/vision.hpp"
+#include "api.h" // for pros::Controller
 
 /**
  * @namespace globals
