@@ -1,0 +1,37 @@
+# Build outputs
+/bin/
+/build/
+/dist/
+/obj/
+*.o
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+
+# PROS / firmware artifacts
+*.elf
+*.map
+*.bin
+*.hex
+*.log
+
+# Editor / IDE
+.vscode/
+.vs/
+*.code-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.bak
+~$*
+
+# Generated compilation database
+compile_commands.json
