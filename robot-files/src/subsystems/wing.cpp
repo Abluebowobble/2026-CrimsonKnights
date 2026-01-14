@@ -8,8 +8,12 @@ Wing::Wing()
 }
 
 void Wing::control(pros::Controller& master) {
-    static bool lastButtonState = false;
     bool currentButtonState = master.get_digital_new_press(CONTROLLER_BUTTONS::WING::TOGGLE);
+    
+    // ye
+    if (currentButtonState) {
+        toggle();
+    }
 }
 
 void Wing::run() {
