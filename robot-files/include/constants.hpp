@@ -1,5 +1,5 @@
 #pragma once
-#include "pid.hpp"
+
 #include "pros/misc.h"
 
 namespace PORT_VALUES {
@@ -53,6 +53,10 @@ constexpr double DESATURATE_BIAS = 0.45;
 
 namespace DRIVETRAIN_CONSTANTS {
 namespace LATERAL {
+constexpr double KP = 10.0;
+constexpr double KI = 0.0;
+constexpr double KD = 3.0;
+constexpr double ANTI_WINDUP_RANGE = 3.0;
 constexpr double SMALL_ERROR = 1;
 constexpr int SMALL_TIMEOUT = 100;
 constexpr double LARGE_ERROR = 3;
@@ -61,6 +65,10 @@ constexpr double SLEW = 0.0;
 } // namespace LATERAL
 
 namespace ANGULAR {
+constexpr double KP = 2.0;
+constexpr double KI = 0.0;
+constexpr double KD = 10.0;
+constexpr double ANTI_WINDUP_RANGE = 3.0;
 constexpr double SMALL_ERROR = 1;
 constexpr int SMALL_TIMEOUT = 100;
 constexpr double LARGE_ERROR = 3;

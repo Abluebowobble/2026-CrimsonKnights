@@ -13,8 +13,9 @@
 #ifndef DRIVETRAINSUBSYTEMS_H
 #define DRIVETRAINSUBSYTEMS_H
 
-#include "lemlib/api.hpp" // IWYU pragma: keep∏
-#include "lemlib/pose.hpp"
+#include "lemlib/api.hpp" // for lemlib::Chassis, ExpoDriveCurve, ControllerSettings, TrackingWheel
+#include "constants.hpp"   // for port and tuning constants
+#include "globals.hpp"     // for globals::controller
 
 /**
  * @class Drivetrain
@@ -51,6 +52,14 @@ public:
    * - Special handling: Enhanced turning sensitivity when throttle is near zero
    */
   void drive();
+
+  /**
+   * @brief Main run method - call this in the robot loop
+   *
+   * This method handles all drivetrain operations during teleoperated mode.
+   * It calls drive() and can be extended to include additional functionality.
+   */
+  void run();
 
   /**
    * @brief Initialize drivetrain - calibrates sensors and starts telemetry
@@ -92,26 +101,26 @@ private:
   // ====================
   // MOTORS
   // ====================
-  pros::MotorGroup leftMotorGroup;  ///< Left side motor group (3 motors: ports 20, 19, -18)
-  pros::MotorGroup rightMotorGroup; ///< Right side motor group (3 motors: ports -12, -13, 14)
+  pros::MotorGroup leftMotorGroup;  ///< Left side motor group (ports from PORT_VALUES::LEFT_* constants)
+  pros::MotorGroup rightMotorGroup; ///< Right side motor group (ports from PORT_VALUES::RIGHT_* constants)
 
   // ====================
   // SENSORS
   // ====================
-  pros::Imu imu1; ///< Primary IMU for heading tracking
+  pros::Imu imu1; ///< Primary IMU for heading tracking (PORT_VALUES::IMU_1)
   // pros::Imu imu2; ///< Secondary IMU for sensor fusion (more accurate heading)
 
   // ====================
   // DRIVE CURVES
   // ====================
-  lemlib::ExpoDriveCurve throttleCurve; ///< Exponential curve for forward/backward control
-  lemlib::ExpoDriveCurve steerCurve;    ///< Exponential curve for turning control
+  lemlib::ExpoDriveCurve throttleCurve; ///< Exponential curve for forward/backward control (OPERATOR_CONSTANTS::THROTTLE)
+  lemlib::ExpoDriveCurve steerCurve;    ///< Exponential curve for turning control (OPERATOR_CONSTANTS::STEER)
 
   // ====================
   // PID CONTROLLERS
   // ====================
-  lemlib::ControllerSettings lateralController; ///< PID settings for forward/backward autonomous movement
-  lemlib::ControllerSettings angularController; ///< PID settings for rotational autonomous movement
+  lemlib::ControllerSettings lateralController; ///< PID settings for forward/backward autonomous movement (DRIVETRAIN_CONSTANTS::LATERAL)
+  lemlib::ControllerSettings angularController; ///< PID settings for rotational autonomous movement (DRIVETRAIN_CONSTANTS::ANGULAR)
 
   // ====================
   // ODOMETRY SENSORS
