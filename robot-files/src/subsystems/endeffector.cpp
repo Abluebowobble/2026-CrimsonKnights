@@ -15,19 +15,16 @@ void EndEffector::spin(int velocity) {
 
 void EndEffector::stop() {
     endEffectorMotor.move(0);
-    isScoring = false;
 }
 
 void EndEffector::scoreHigh() {
     // Run motor at high speed for scoring high
     spin(127);
-    isScoring = true;
 }
 
 void EndEffector::scoreMid() {
     // Run motor at medium speed for scoring mid
     spin(90);
-    isScoring = true;
 }
 
 void EndEffector::control(pros::Controller& master) {
@@ -35,12 +32,12 @@ void EndEffector::control(pros::Controller& master) {
         scoreHigh();
     } else if (master.get_digital(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_MID)) {
         scoreMid();
-    } else if (!isScoring) {
+    } else {
         stop();
     }
     
     // Auto-stop after scoring completes (can be refined with timers/sensors)
-    if (isScoring && endEffectorMotor.get_actual_velocity() < 5) {
+    if (endEffectorMotor.get_actual_velocity() < 5) {
         stop();
     }
 }
