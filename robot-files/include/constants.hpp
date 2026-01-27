@@ -4,22 +4,22 @@
 
 namespace PORT_VALUES {
 // drivetrain
-constexpr int LEFT_1 = 11;
-constexpr int LEFT_2 = 12;
-constexpr int LEFT_3 = 13;
-constexpr int RIGHT_1 = -18;
-constexpr int RIGHT_2 = -19;
-constexpr int RIGHT_3 = -20;
+constexpr int LEFT_1 = 17;
+constexpr int LEFT_2 = 18;
+constexpr int LEFT_3 = 19;
+constexpr int RIGHT_1 = -12;
+constexpr int RIGHT_2 = -13;
+constexpr int RIGHT_3 = -14;
 
 // odometry
-constexpr int HORIZONTAL_ROTATION_SENSOR = 16;
-constexpr int VERTICAL_ROTATION_SENSOR = 6;
-constexpr int IMU_1 = 0; // newest
+// constexpr int HORIZONTAL_ROTATION_SENSOR = 16;
+// constexpr int VERTICAL_ROTATION_SENSOR = 6;
+// constexpr int IMU_1 = 0; // newest
 // constexpr int IMU_2 = 11; // Second IMU port, old
 
 // conveyor belt
-constexpr int ENDEFFECTOR_MOTOR_PORT = 0;
-constexpr int INTAKE_MOTOR_PORT = 0;
+constexpr int ENDEFFECTOR_MOTOR_PORT = 11;
+constexpr int INTAKE_MOTOR_PORT = -20;
 
 // pneumatics
 constexpr int LIL_WILL_PNEUMATIC = 0;

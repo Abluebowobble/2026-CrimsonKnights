@@ -65,7 +65,7 @@ Drivetrain::Drivetrain():
                  CHASIS_VALUES::RPM,
                  CHASIS_VALUES::HORIZONTAL_DRIFT
                 ),
-      chassis(drivetrain, lateralController, angularController, sensors) {}
+      chassis(drivetrain, nullptr, nullptr, nullptr) {}
 
 void Drivetrain::init() {
     // Set motor brake modes
