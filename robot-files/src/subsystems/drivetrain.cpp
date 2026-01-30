@@ -57,7 +57,7 @@ Drivetrain::Drivetrain():
                               lemlib::Omniwheel::NEW_275,
                               CHASIS_VALUES::HORIZONTALTRACKING_WHEEL_OFFSET
                             ),
-      sensors(&verticalTrackingWheel, nullptr, &horizontalTrackingWheel, nullptr, &imu1),
+      sensors(nullptr, nullptr, nullptr, nullptr, nullptr),
       drivetrain(&leftMotorGroup,
                  &rightMotorGroup,
                  CHASIS_VALUES::TRACKWIDTH,
@@ -65,7 +65,7 @@ Drivetrain::Drivetrain():
                  CHASIS_VALUES::RPM,
                  CHASIS_VALUES::HORIZONTAL_DRIFT
                 ),
-      chassis(drivetrain, nullptr, nullptr, nullptr) {}
+      chassis(drivetrain, lateralController, angularController, sensors) {}
 
 void Drivetrain::init() {
     // Set motor brake modes
