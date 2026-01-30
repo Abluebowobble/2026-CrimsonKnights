@@ -4,12 +4,12 @@
 
 namespace PORT_VALUES {
 // drivetrain
-constexpr int LEFT_1 = -17;
-constexpr int LEFT_2 = -18;
-constexpr int LEFT_3 = -19;
-constexpr int RIGHT_1 = 12;
-constexpr int RIGHT_2 = 13;
-constexpr int RIGHT_3 = 14;
+constexpr int LEFT_1 = 17;
+constexpr int LEFT_2 = 18;
+constexpr int LEFT_3 = 19;
+constexpr int RIGHT_1 = -12;
+constexpr int RIGHT_2 = -13;
+constexpr int RIGHT_3 = -14;
 
 // odometry
 // constexpr int HORIZONTAL_ROTATION_SENSOR = 16;
