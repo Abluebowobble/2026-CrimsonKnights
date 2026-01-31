@@ -85,8 +85,8 @@ void Drivetrain::drive() {
     const int rawTurn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
     // Arcade drive using lemlib, with desaturation bias from constants
-    chassis.arcade(curvedThrottle,
-                   curvedTurn,
+    chassis.arcade(OPERATOR_CONSTANTS::THROTTLE::CURVE,
+                   OPERATOR_CONSTANTS::STEER::CURVE,
                    true, // disable built-in drive curve since we apply our own
                    OPERATOR_CONSTANTS::DESATURATE_BIAS);
 }
@@ -99,5 +99,4 @@ void Drivetrain::run() {
 lemlib::Chassis& Drivetrain::get_chassis() { return chassis; }
 
 pros::MotorGroup& Drivetrain::get_left_motors() { return leftMotorGroup; }
-
 pros::MotorGroup& Drivetrain::get_right_motors() { return rightMotorGroup; }
