@@ -76,7 +76,7 @@ void autonomous() {
   auto &chassis = drivetrain.get_chassis();
 chassis.drivetrain.leftMotorGroup.move(127);
 chassis.drivetrain.rightMotorGroup.move(127);
-  pros::delay(1000);
+  pros::delay(3000);
 
 chassis.drivetrain.leftMotorGroup.move(0);
 chassis.drivetrain.rightMotorGroup.move(0);
