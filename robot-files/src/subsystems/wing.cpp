@@ -18,5 +18,5 @@ void Wing::control(pros::Controller& master) {
 
 void Wing::run() {
     // Use the shared global controller for operator control
-    control(globals::controller);
+    
 }

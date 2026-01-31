@@ -9,8 +9,6 @@
 
 Drivetrain drivetrain;
 Intake intake;
-Wing wing;
-LilWill lil_will;
 EndEffector endeffector;
 
 /**

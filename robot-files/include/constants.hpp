@@ -18,7 +18,7 @@ constexpr int IMU_1 = 0; // newest
 constexpr int IMU_2 = 0; // Second IMU port, old
 
 // conveyor belt
-constexpr int ENDEFFECTOR_MOTOR_PORT = 12;
+constexpr int ENDEFFECTOR_MOTOR_PORT = 11;
 constexpr int INTAKE_MOTOR_PORT = 20;
 
 // pneumatics

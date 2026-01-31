@@ -36,10 +36,7 @@ void EndEffector::control(pros::Controller& master) {
         stop();
     }
     
-    // Auto-stop after scoring completes (can be refined with timers/sensors)
-    if (endEffectorMotor.get_actual_velocity() < 5) {
-        stop();
-    }
+
 }
 
 void EndEffector::run() {
