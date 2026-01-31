@@ -20,6 +20,7 @@ void EndEffector::stop() {
 void EndEffector::scoreHigh() {
     // Run motor at high speed for scoring high
     spin(127);
+  
 }
 
 void EndEffector::scoreMid() {

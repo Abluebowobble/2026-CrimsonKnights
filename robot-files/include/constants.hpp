@@ -22,7 +22,7 @@ constexpr int ENDEFFECTOR_MOTOR_PORT = 11;
 constexpr int INTAKE_MOTOR_PORT = 20;
 
 // pneumatics
-constexpr int LIL_WILL_PNEUMATIC = 1;
+constexpr int LIL_WILL_PNEUMATIC = 'A';
 constexpr int WING_PNEUMATIC = 0;
 
 } // namespace PORT_VALUES
@@ -45,7 +45,7 @@ constexpr double CURVE = 1;
 namespace STEER {
 constexpr int DEADBAND = 3;
 constexpr int MIN = 20;
-constexpr double CURVE = -1.000;
+constexpr double CURVE = 1.000;
 } // namespace STEER
 
 constexpr double DESATURATE_BIAS = 0.45;

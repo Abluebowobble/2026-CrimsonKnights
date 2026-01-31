@@ -86,8 +86,8 @@ void Drivetrain::drive() {
 
     // Arcade drive using lemlib, with desaturation bias from constants
     chassis.arcade(rawThrottle,
-                   rawTurn,
-                   true, // disable built-in drive curve since we apply our own
+                   -rawTurn,
+                   false, // disable built-in drive curve since we apply our own
                    OPERATOR_CONSTANTS::DESATURATE_BIAS);
 }
 

@@ -10,6 +10,7 @@
 Drivetrain drivetrain;
 Intake intake;
 EndEffector endeffector;
+LilWill lilwill;
 
 /**
  * A callback function for LLEMU's center button.
@@ -72,13 +73,14 @@ void competition_initialize() {}
  */
 void autonomous() {
 //   auto &chassis = drivetrain.get_chassis();
-// chassis.drivetrain.leftMotorGroup.move(127);
-// chassis.drivetrain.rightMotorGroup.move(127);
-//   pros::delay(3000);
+// chassis.drivetrain.move(127);
 
-// chassis.drivetrain.leftMotorGroup.move(0);
-// chassis.drivetrain.rightMotorGroup.move(0);
-// }
+//   pros::delay(1000);
+
+
+// chassis.drivetrain.move(0);
+// intake.spin();
+
 }
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -98,7 +100,7 @@ void opcontrol() {
     // Run drivetrain subsystem
     drivetrain.run();
     intake.run();
-    // lil_will.run();
+    lilwill.run();
     endeffector.run();
     // wing.run();
     
