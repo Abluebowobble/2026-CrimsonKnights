@@ -13,7 +13,7 @@ void LilWill::control(pros::Controller& master) {
     
     // Toggle on button press (rising edge detection)
     if (currentButtonState) {
-        toggle();
+        lilWillPneumatic.toggle();
     }
 }
 

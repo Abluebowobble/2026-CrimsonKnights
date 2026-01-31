@@ -45,7 +45,7 @@ public:
   void run();
 
 private:
-  pros::adi::DigitalOut LilWillPneumatic;
+  pros::adi::Pneumatics LilWillPneumatic;
   bool isExtended;
 };
 

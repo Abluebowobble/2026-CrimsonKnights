@@ -33,10 +33,12 @@ void EndEffector::control(pros::Controller& master) {
         scoreHigh();
     } else if (master.get_digital(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_MID)) {
         scoreMid();
-    } else {
+    } else if (master.get_digital(CONTROLLER_BUTTONS::E_CONTROLLER_DIGITAL_R2)) {
+
+    }
+    else {
         stop();
     }
-    
 
 }
 

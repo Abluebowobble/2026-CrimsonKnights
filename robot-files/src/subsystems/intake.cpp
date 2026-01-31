@@ -17,7 +17,8 @@ void Intake::stop() {
 }
 
 void Intake::control(pros::Controller& master) {
-    if (master.get_digital(CONTROLLER_BUTTONS::INTAKE::INTAKE)) {
+    if (master.get_digital(CONTROLLER_BUTTONS::INTAKE::INTAKE)||master.get_digital(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_HIGH)
+||master.get_digital(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_MID)) {
         spin(-127); // Full speed intake
     } else if (master.get_digital(CONTROLLER_BUTTONS::INTAKE::OUTTAKE)) {
         spin(127); // Full speed outtake
