@@ -84,13 +84,9 @@ void Drivetrain::drive() {
     const int rawThrottle = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     const int rawTurn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-    // Apply exponential drive curves
-    const float curvedThrottle = throttleCurve.curve(static_cast<float>(rawThrottle));
-    const float curvedTurn = steerCurve.curve(static_cast<float>(rawTurn));
-
     // Arcade drive using lemlib, with desaturation bias from constants
-    chassis.arcade(static_cast<int>(curvedThrottle),
-                   static_cast<int>(curvedTurn),
+    chassis.arcade(curvedThrottle,
+                   curvedTurn,
                    true, // disable built-in drive curve since we apply our own
                    OPERATOR_CONSTANTS::DESATURATE_BIAS);
 }

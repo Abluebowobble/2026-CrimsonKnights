@@ -1,9 +1,17 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "subsystems/drivetrain.hpp"
+#include "subsystems/wing.hpp"
+#include "subsystems/lil_will.hpp"
+#include "subsystems/endeffector.hpp"
+#include "subsystems/intake.hpp"
 
 
 Drivetrain drivetrain;
+Intake intake;
+Wing wing;
+LilWill lil_will;
+EndEffector endeffector;
 
 /**
  * A callback function for LLEMU's center button.
@@ -64,7 +72,15 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+  auto &chassis = drivetrain.get_chassis();
+chassis.drivetrain.leftMotorGroup.move(127);
+chassis.drivetrain.rightMotorGroup.move(127);
+  pros::delay(1000);
+
+chassis.drivetrain.leftMotorGroup.move(0);
+chassis.drivetrain.rightMotorGroup.move(0);
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -83,6 +99,10 @@ void opcontrol() {
   while (true) {
     // Run drivetrain subsystem
     drivetrain.run();
+    intake.run();
+    lil_will.run();
+    endeffector.run();
+    // wing.run();
     
     // Small delay to prevent CPU overuse
     pros::delay(10);
