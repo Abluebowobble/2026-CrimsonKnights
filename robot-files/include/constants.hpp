@@ -39,13 +39,13 @@ namespace OPERATOR_CONSTANTS {
 namespace THROTTLE {
 constexpr int DEADBAND = 3;
 constexpr int MIN = 10;
-constexpr double CURVE = 1.019;
+constexpr double CURVE = 1;
 } // namespace THROTTLE
 
 namespace STEER {
 constexpr int DEADBAND = 3;
 constexpr int MIN = 20;
-constexpr double CURVE = 1.002;
+constexpr double CURVE = -1.000;
 } // namespace STEER
 
 constexpr double DESATURATE_BIAS = 0.45;

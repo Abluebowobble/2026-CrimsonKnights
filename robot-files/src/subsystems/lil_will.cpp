@@ -20,4 +20,5 @@ void LilWill::control(pros::Controller& master) {
 void LilWill::run() {
     // Use the shared global controller for operator control
     control(globals::controller);
+    retract();
 }
