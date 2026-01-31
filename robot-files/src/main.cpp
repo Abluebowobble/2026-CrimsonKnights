@@ -73,15 +73,15 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-  auto &chassis = drivetrain.get_chassis();
-chassis.drivetrain.leftMotorGroup.move(127);
-chassis.drivetrain.rightMotorGroup.move(127);
-  pros::delay(3000);
+//   auto &chassis = drivetrain.get_chassis();
+// chassis.drivetrain.leftMotorGroup.move(127);
+// chassis.drivetrain.rightMotorGroup.move(127);
+//   pros::delay(3000);
 
-chassis.drivetrain.leftMotorGroup.move(0);
-chassis.drivetrain.rightMotorGroup.move(0);
+// chassis.drivetrain.leftMotorGroup.move(0);
+// chassis.drivetrain.rightMotorGroup.move(0);
+// }
 }
-
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -100,7 +100,7 @@ void opcontrol() {
     // Run drivetrain subsystem
     drivetrain.run();
     intake.run();
-    lil_will.run();
+    // lil_will.run();
     endeffector.run();
     // wing.run();
     

@@ -4,7 +4,7 @@
 #include "pros/misc.hpp"
 
 EndEffector::EndEffector()
-    : endEffectorMotor(PORT_VALUES::ENDEFFECTOR_MOTOR_PORT, pros::MotorGears::green),
+    : endEffectorMotor(PORT_VALUES::ENDEFFECTOR_MOTOR_PORT, pros::MotorGears::blue),
       isScoring(false) {
     endEffectorMotor.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 }

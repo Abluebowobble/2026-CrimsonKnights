@@ -5,7 +5,6 @@
 LilWill::LilWill()
     : lilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC),
       isExtended(false) {
-    retract(); // Start retracted
 }
 
 void LilWill::control(pros::Controller& master) {
