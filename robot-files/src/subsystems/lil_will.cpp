@@ -3,7 +3,7 @@
 #include "globals.hpp"
 
 LilWill::LilWill()
-    : LilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC, true),
+    : lilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC, true),
       isExtended(false) {
 }
 

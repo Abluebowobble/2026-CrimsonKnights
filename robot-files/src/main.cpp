@@ -73,14 +73,14 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-//   auto &chassis = drivetrain.get_chassis();
-// chassis.drivetrain.move(127);
 
+// intake.spin();
+// drivetrain.leftMotorGroup.move(127);
+// drivetrain.rightMotorGroup.move(-127);
 //   pros::delay(1000);
 
-
-// chassis.drivetrain.move(0);
-// intake.spin();
+// drivetrain.leftMotorGroup.move(0);
+// drivetrain.rightMotorGroup.move(0);
 
 }
 /**
