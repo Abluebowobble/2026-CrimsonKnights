@@ -3,7 +3,7 @@
 #include "globals.hpp"
 
 LilWill::LilWill()
-    : lilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC),
+    : LilWillPneumatic(PORT_VALUES::LIL_WILL_PNEUMATIC, true),
       isExtended(false) {
 }
 
@@ -13,7 +13,7 @@ void LilWill::control(pros::Controller& master) {
     
     // Toggle on button press (rising edge detection)
     if (currentButtonState) {
-        lilWillPneumatic.toggle();
+        LilWillPneumatic.toggle();
     }
 }
 
