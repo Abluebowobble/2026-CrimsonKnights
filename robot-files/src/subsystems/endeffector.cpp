@@ -18,14 +18,11 @@ void EndEffector::stop() {
 }
 
 void EndEffector::scoreHigh() {
-    // Run motor at high speed for scoring high
-    spin(127);
-  
+    spin(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_HIGH_SPEED);
 }
 
 void EndEffector::scoreMid() {
-    // Run motor at medium speed for scoring mid
-    spin(90);
+    spin(CONTROLLER_BUTTONS::ENDEFFECTOR::SCORE_MID_SPEED);
 }
 
 void EndEffector::control(pros::Controller& master) {

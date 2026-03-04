@@ -1,4 +1,5 @@
 #include "subsystems/drivetrain.hpp"
+#include <cmath>
 
 // Constructor: configure motors, sensors, controller settings, and lemlib chassis
 Drivetrain::Drivetrain(): 
@@ -48,16 +49,11 @@ Drivetrain::Drivetrain():
                         DRIVETRAIN_CONSTANTS::ANGULAR::SLEW
                     ),
       verticalRotationSensor(PORT_VALUES::VERTICAL_ROTATION_SENSOR),
-      horizontalRotationSensor(PORT_VALUES::HORIZONTAL_ROTATION_SENSOR),
       verticalTrackingWheel(&verticalRotationSensor,
                             lemlib::Omniwheel::NEW_275,
-                            CHASIS_VALUES::LATERALTRACKING_WHEEL_OFFSET
+                            CHASIS_VALUES::VERTICAL_TRACKING_WHEEL_OFFSET
                         ),
-      horizontalTrackingWheel(&horizontalRotationSensor,
-                              lemlib::Omniwheel::NEW_275,
-                              CHASIS_VALUES::HORIZONTALTRACKING_WHEEL_OFFSET
-                            ),
-      sensors(nullptr, nullptr, nullptr, nullptr, nullptr),
+      sensors(&verticalTrackingWheel, nullptr, nullptr, nullptr, &imu1),
       drivetrain(&leftMotorGroup,
                  &rightMotorGroup,
                  CHASIS_VALUES::TRACKWIDTH,
@@ -68,6 +64,9 @@ Drivetrain::Drivetrain():
       chassis(drivetrain, lateralController, angularController, sensors) {}
 
 void Drivetrain::init() {
+    // Reverse tracking wheel so forward motion reads positive
+    verticalRotationSensor.set_reversed(true);
+
     // Set motor brake modes
     leftMotorGroup.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
     rightMotorGroup.set_brake_mode_all(pros::E_MOTOR_BRAKE_COAST);
@@ -80,20 +79,52 @@ void Drivetrain::drive() {
     // Use the shared global controller for input
     auto& master = globals::controller;
 
-    // Get joystick values
-    const int rawThrottle = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    const int rawTurn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    // Get joystick values DO NOT CHANGE THIS SHIT IT WORKS IT WORKS IT WORKS DO NOT TOUCH PLEASE PLEASE PLEASE PLEASE
+    const int rawTurn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X); //DO NOT TOUCH
+    const int rawThrottle = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y); //DO NOT TOUCH
+
+    // Apply expo drive curves using configured deadband/min/curve constants
+    const int throttle = throttleCurve.curve(rawThrottle);
+    const int turn = steerCurve.curve(rawTurn);
+
+    // Snap to nearest N/E/S/W (Y button)
+    if (master.get_digital_new_press(CONTROLLER_BUTTONS::DRIVETRAIN::SNAP_CARDINAL)) {
+        snapToCardinal();
+        return;
+    }
+
+    // Don't let manual arcade drive override an in-progress snap motion
+    if (chassis.isInMotion()) return;
 
     // Arcade drive using lemlib, with desaturation bias from constants
-    chassis.arcade(rawThrottle,
-                   -rawTurn,
-                   false, // disable built-in drive curve since we apply our own
+    chassis.arcade(throttle,
+                   -turn,
+                   true, // built-in drive curve disabled; we apply our own above
                    OPERATOR_CONSTANTS::DESATURATE_BIAS);
+}
+
+void Drivetrain::navigateTo(const Waypoint& wp) {
+    // moveToPose moves to (x, y) and arrives at the given heading
+    // async=false blocks until motion completes or timeout fires
+    chassis.moveToPose(wp.x, wp.y, wp.heading, wp.timeout, {}, false);
+}
+
+void Drivetrain::snapToCardinal() {
+    // Snap to nearest 0 (N), 90 (E), 180 (S), or 270 (W)
+    float heading = std::fmod(std::fmod(chassis.getPose().theta, 360.0f) + 360.0f, 360.0f);
+    float target = std::round(heading / 90.0f) * 90.0f;
+    if (target >= 360.0f) target = 0.0f;
+    chassis.turnToHeading(target, DRIVETRAIN_CONSTANTS::SNAP::TIMEOUT, {}, true); // async=true; isInMotion() guard blocks arcade
 }
 
 void Drivetrain::run() {
     // Main run method to be called in the robot loop
     drive();
+
+    // Display current pose on the V5 brain screen
+    lemlib::Pose pose = chassis.getPose();
+    pros::screen::print(pros::E_TEXT_MEDIUM, 1, "X: %.2f  Y: %.2f", pose.x, pose.y);
+    pros::screen::print(pros::E_TEXT_MEDIUM, 2, "Angle: %.2f deg", pose.theta);
 }
 
 lemlib::Chassis& Drivetrain::get_chassis() { return chassis; }

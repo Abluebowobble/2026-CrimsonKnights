@@ -16,6 +16,29 @@
 #include "lemlib/api.hpp" // for lemlib::Chassis, ExpoDriveCurve, ControllerSettings, TrackingWheel
 #include "constants.hpp"   // for port and tuning constants
 #include "globals.hpp"     // for globals::controller
+#include "autonomous/waypoint.hpp" // for Waypoint and NavMap
+#include "pros/imu.hpp"
+
+/**
+ * @class InvertedImu
+ * @brief Wraps pros::Imu to correct for an upside-down mounted IMU.
+ * Overrides get_rotation() and get_heading() so LemLib receives
+ * clockwise-positive heading data regardless of physical orientation.
+ */
+class InvertedImu : public pros::Imu {
+public:
+    explicit InvertedImu(int port) : pros::Imu(port) {}
+
+    double get_rotation() const override {
+        return -pros::Imu::get_rotation();
+    }
+
+    double get_heading() const override {
+        double h = pros::Imu::get_heading();
+        double inverted = 360.0 - h;
+        return (inverted >= 360.0) ? 0.0 : inverted;
+    }
+};
 
 /**
  * @class Drivetrain
@@ -52,6 +75,19 @@ public:
    * - Special handling: Enhanced turning sensitivity when throttle is near zero
    */
   void drive();
+
+  /**
+   * @brief Snaps the robot to the nearest cardinal direction (0, 90, 180, 270 degrees).
+   * Blocks until the turn completes or times out.
+   */
+  void snapToCardinal();
+
+  /**
+   * @brief Synchronously navigate to a Waypoint using LemLib moveToPose.
+   * Blocks until the robot reaches the target or the waypoint timeout expires.
+   * @param wp  Target position, heading, and timeout.
+   */
+  void navigateTo(const Waypoint& wp);
 
   /**
    * @brief Main run method - call this in the robot loop
@@ -107,7 +143,7 @@ private:
   // ====================
   // SENSORS
   // ====================
-  pros::Imu imu1; ///< Primary IMU for heading tracking (PORT_VALUES::IMU_1)
+  InvertedImu imu1; ///< Primary IMU, upside-down — InvertedImu negates rotation/heading to correct direction
   // pros::Imu imu2; ///< Secondary IMU for sensor fusion (more accurate heading)
 
   // ====================
@@ -125,11 +161,9 @@ private:
   // ====================
   // ODOMETRY SENSORS
   // ====================
-  pros::Rotation verticalRotationSensor;   ///< Rotation sensor for vertical tracking wheel (forward/back)
-  pros::Rotation horizontalRotationSensor; ///< Rotation sensor for horizontal tracking wheel (strafe/lateral)
+  pros::Rotation verticalRotationSensor; ///< Rotation sensor for vertical tracking wheel (forward/back)
 
-  lemlib::TrackingWheel verticalTrackingWheel;   ///< Vertical tracking wheel object (measures forward/back)
-  lemlib::TrackingWheel horizontalTrackingWheel; ///< Horizontal tracking wheel object (measures lateral movement)
+  lemlib::TrackingWheel verticalTrackingWheel; ///< Vertical tracking wheel object (measures forward/back)
 
   // ====================
   // LEMLIB COMPONENTS

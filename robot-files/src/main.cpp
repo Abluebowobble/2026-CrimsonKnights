@@ -1,17 +1,18 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "subsystems/drivetrain.hpp"
-#include "subsystems/wing.hpp"
-#include "subsystems/lil_will.hpp"
+#include "subsystems/little_will.hpp"
 #include "subsystems/endeffector.hpp"
 #include "subsystems/intake.hpp"
+// #include "autonomous/waypoint.hpp"      // shelved: modular auton system
+// #include "autonomous/auton_sequence.hpp" // shelved: modular auton system
 
 
 Drivetrain drivetrain;
 Intake intake;
 
 EndEffector endeffector;
-LilWill lilwill;
+LittleWill littlewill;
 
 /**
  * A callback function for LLEMU's center button.
@@ -73,16 +74,52 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+  auto& chassis = drivetrain.get_chassis();
 
-// intake.spin();
-// drivetrain.leftMotorGroup.move(127);
-// drivetrain.rightMotorGroup.move(-127);
-//   pros::delay(1000);
+  // Background task to print pose to brain screen during auton
+  pros::Task screenTask([&]() {
+    while (true) {
+      lemlib::Pose pose = chassis.getPose();
+      pros::screen::print(pros::E_TEXT_MEDIUM, 1, "X: %.2f  Y: %.2f", pose.x, pose.y);
+      pros::screen::print(pros::E_TEXT_MEDIUM, 2, "Angle: %.2f deg", pose.theta);
+      pros::delay(50);
+    }
+  });
 
-// drivetrain.leftMotorGroup.move(0);
-// drivetrain.rightMotorGroup.move(0);
+  chassis.setPose(0, 0, 0);
+
+  intake.spin(-127);
+  //3stack
+  chassis.moveToPose(10, 13, 45, 3000, {.maxSpeed = 60}, false);
+  chassis.moveToPose(25, 29, 45, 3000, {.maxSpeed = 20}, false);
+  littlewill.extend();
+  pros::delay(800);
+  //under goal
+  // chassis.moveToPose(32, 40, 65, 3000, {.maxSpeed = 40}, false);
+  
+
+  littlewill.extend();
+  pros::delay(800);
+  //move back
+  chassis.moveToPose(20, 20, 45, 3000, {.forwards=false,.maxSpeed = 100}, false);
+  //mid spot
+  chassis.moveToPose(44, 0, 180, 3000, {.maxSpeed = 80}, false);
+  //goal
+  chassis.moveToPose(44, 24, 180, 1500, {.forwards = false, .maxSpeed = 70}, false);
+  endeffector.scoreHigh();
+  pros::delay(2000);
+  endeffector.stop();
+  //match loader
+  littlewill.extend();
+  pros::delay(400);
+  chassis.moveToPose(44, -6, 0, 4000, {.maxSpeed = 40}, true);
+  pros::delay(2500);
+  //goal
+  chassis.moveToPose(44, 24, 180, 3000, {.forwards = false, .maxSpeed = 70}, false);
+  
 
 }
+
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -98,10 +135,20 @@ void autonomous() {
  */
 void opcontrol() {
   while (true) {
+    // B button: reset odometry position to (0, 0, 0)
+    if (globals::controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+      drivetrain.get_chassis().setPose(0, 0, 0);
+    }
+
+    // Right arrow: run autonomous routine
+    if (globals::controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+      autonomous();
+    }
+
     // Run drivetrain subsystem
     drivetrain.run();
     intake.run();
-    lilwill.run();
+    littlewill.run();
     endeffector.run();
     // wing.run();
     

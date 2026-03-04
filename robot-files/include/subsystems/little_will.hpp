@@ -1,20 +1,20 @@
 /**
- * @file lil_will.hpp
- * @brief Lil Will subsystem using pneumatics
+ * @file little_will.hpp
+ * @brief Little Will subsystem using pneumatics
  */
 
-#ifndef LIL_WILL_HPP
-#define LIL_WILL_HPP
+#ifndef LITTLE_WILL_HPP
+#define LITTLE_WILL_HPP
 
 #include "pros/adi.hpp"
 #include "pros/misc.hpp"
 
-class LilWill {
+class LittleWill {
 public:
   /**
    * @brief Constructor - initializes pneumatic solenoid
    */
-  LilWill();
+  LittleWill();
 
   /**
    * @brief Extend lil will mechanism
@@ -45,8 +45,8 @@ public:
   void run();
 
 private:
-  pros::adi::Pneumatics lilWillPneumatic;
+  pros::adi::Pneumatics littleWillPneumatic;
   bool isExtended;
 };
 
-#endif // LIL_WILL_HPP
+#endif // LITTLE_WILL_HPP
